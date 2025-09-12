@@ -109,7 +109,7 @@ for column in ['Booking Status', 'Vehicle Type', 'Payment Method']:
         print(f"Количество уникальных значений: {df[column].nunique()}")
 ```
 
-Задание 2 (лаба 2)
+Задание 2 (лаба 2) - Написать скрипт, который выводит на экран статистический обзор данных, подсчёт количества пропущенных значений в каждом столбце и уникальные значения в категориальных столбцах (Booking Status, Vehicle Type)
 
 ```python
 import pandas as pd
