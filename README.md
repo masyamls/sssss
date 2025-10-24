@@ -154,3 +154,76 @@ try:
 except FileNotFoundError:
     print(f'Файл {file_path} не найден.')
 ```
+
+Задание 3 
+
+```
+import pandas as pd
+
+# Загрузка данных
+filename = 'ncr_ride_bookings.csv'
+try:
+    df = pd.read_csv(filename, quotechar='"', on_bad_lines='skip')
+except FileNotFoundError:
+    print(f"Файл '{filename}' не найден.")
+    exit()
+
+# Фильтрация только завершённых поездок
+df = df[df['Booking Status'] == 'Completed'].copy()
+
+# Проверка обязательных колонок
+required = ['Ride Distance', 'Booking Value']
+if not all(col in df.columns for col in required):
+    print("В файле отсутствуют необходимые колонки:", required)
+    exit()
+
+# Очистка от пропусков
+df = df[required].dropna()
+
+print(f"Загружено {len(df)} поездок.")
+print(f"Средняя стоимость поездки: {df['Booking Value'].mean():.2f} рублей")
+print(f"Медианная стоимость поездки: {df['Booking Value'].median():.2f} рублей")
+
+# Создаем реалистичную модель тарифа такси
+# Типичный тариф: 100 руб посадка + 15 руб/км
+print("\n" + "="*50)
+print("РАСЧЕТ СТОИМОСТИ ПОЕЗДКИ НА ТАКСИ")
+print("="*50)
+print("Тариф: 100 руб (посадка) + 15 руб/км")
+print("Минимальная стоимость: 150 рублей")
+
+def calculate_taxi_price(distance_km):
+    """
+    Расчет стоимости поездки по типичному тарифу такси
+    """
+    base_fare = 100  # посадка
+    rate_per_km = 15  # руб/км
+    min_fare = 150   # минимальная стоимость
+    
+    price = base_fare + (distance_km * rate_per_km)
+    return max(price, min_fare)
+
+while True:
+    user_input = input("\nВведите расстояние в км (или 'выход' для завершения): ").strip()
+    
+    if user_input.lower() == 'выход':
+        break
+
+    try:
+        distance = float(user_input)
+        if distance <= 0:
+            print("Расстояние должно быть положительным.")
+            continue
+
+        # Расчет стоимости по реалистичному тарифу
+        calculated_price = calculate_taxi_price(distance)
+        
+        print(f"\nПри расстоянии {distance} км:")
+        print(f"Расчетная стоимость: {calculated_price:.2f} рублей")
+        print(f"Состав тарифа: 100 руб (посадка) + {distance} км × 15 руб/км")
+
+    except ValueError:
+        print("Введите корректное число для расстояния.")
+
+print("\nРабота завершена.")
+```
